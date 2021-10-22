@@ -1,0 +1,477 @@
+---
+title: "Exploratory Data Analysis" 
+subtitle: " Exploring Numerical Data" 
+#author: Prof Ranjini Grove <br> Department of Statistics <br> `r fontawesome::fa(name="envelope", fill="white")` grover4@uw.edu <br> `r fontawesome::fa("link", fill="white")` https://www.canvas.uw.edu  
+#institute: "Department of Statistics"
+#date: "2016/12/12 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css", "slides.css"]
+    lib_dir: libs
+    nature:
+      ratio: "16:9"
+      highlightStyle: solarized-light
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+<style>
+p.caption {
+  font-size: 0.8em;
+}
+</style>
+
+```{r packages, echo=FALSE, message=FALSE, warning=FALSE}
+
+#r <- getOption("repos")
+#r["CRAN"] <- "https://cran.rstudio.com"
+#options(repos = r)
+
+#packages=c("tidyverse","stringr","fontawesome","magick")
+#sapply(X=packages,FUN=function(x) if(!require(x,character.only=TRUE))  install.packages(x,dependencies=TRUE) )
+#install.packages("devtools")
+#devtools::install_github("rstudio/fontawesome")
+#devtools::install_github("gadenbuie/xaringanExtra")
+#install.packages("datasauRus")
+library(countdown)
+library(tidyverse)
+library(stringr)
+library(fontawesome)
+library(magick)
+library(forcats)
+library(tibble)
+library(datasauRus)
+library(xaringanExtra)
+
+options(htmltools.dir.version = FALSE)
+xaringanExtra::use_fit_screen()
+xaringanExtra::use_panelset()
+#xaringanExtra::use_slide_tone()
+xaringanExtra::use_editable(expires=100)
+
+
+options(knit.table.format="html")
+
+```
+## 1. Exploratory Data Analysis (EDA)
+
+- EDA is an approach to analyzing data sets to summarize its main characteristics.
+
+- Often, this is visual (graphs, tables). 
+
+- But we also calculate numerical summaries at this stage.
+
+
+
+---
+class: top left
+
+### Why visualize? 
+
+The following 13 datasets (from the `datasauRus` package) each have two variables $x$ and $y$ which are summarized below.
+
+
+```{r summary-statistics,echo=F,message=F}
+
+datasaurus_dozen %>%
+  group_by(dataset) %>%
+  summarize(meanx=mean(x),meany=mean(y),
+            sdx=sd(x),sdy=sd(y),
+            medianx=median(x),mediany=median(y),
+            r=cor(x,y)) %>% ungroup()
+
+
+```
+---
+class: top, left
+
+### Why visualize?
+
+However, each dataset looks very different!!
+
+```{r look-at-data,echo=F,fig.align="center"}
+
+ggplot(data=datasaurus_dozen,mapping=aes(x=x,
+                y=y,color=dataset))+
+         geom_point()+
+         facet_wrap(facets=vars(dataset))
+
+
+```
+---
+### ggplot: The workhorse 
+
+
+- Plots are constructed in layers.
+
+- Structure of the command can be summarized as follows.
+
+```{r, echo=T, eval=F}
+
+#  ggplot( data=[dataset],
+#         mapping=aes(x=[x-variable],y=[y=variable]) +
+#         geom_xxx() +
+#         other options
+
+```
+---
+class: top, left
+
+## 2. Building plots for different data types
+
+- First question to ask yourself is how many variables are involved. 
+
+ - univariate analysis: distribution of a single variable
+ 
+ - bivariate analysis: relationship between two variables
+ 
+ - multivariate analysis: relationship between many variables, usually focusing on two while conditioning for others.
+
+--
+
+- Second question to ask yourself is what are the variable types.
+
+ - numerical
+ 
+ - categorical
+ 
+
+---
+###  Histogram 
+
+```{r, echo=T,fig.width=4,fig.height=4,fig.align="center"}
+
+ggplot(data=starwars, 
+       mapping=aes(x=height)) +
+   geom_histogram()   #<<
+
+```
+
+---
+class: top, left
+
+###  Histograms and binwidth
+
+.panelset[
+.panel[.panel-name[binwidth = 5]
+```{r out.width = "30%", fig.align="center", warning=FALSE}
+ggplot(data=starwars, 
+       mapping=aes(x = height)) +
+  geom_histogram(binwidth = 5)
+```
+]
+.panel[.panel-name[binwidth = 10]
+```{r out.width = "30%", fig.align="center", warning=FALSE}
+ggplot(data=starwars, 
+       mapping=aes(x = height)) +
+  geom_histogram(binwidth = 10)
+```
+]
+.panel[.panel-name[binwidth = 20]
+```{r out.width = "30%", fig.align="center", warning=FALSE}
+ggplot(data=starwars, 
+       mapping=aes(x = height)) +
+  geom_histogram(binwidth = 20)
+```
+]
+.panel[.panel-name[binwidth =30]
+```{r out.width = "30%", fig.align="center", warning=FALSE}
+ggplot(data=starwars, 
+       mapping=aes(x = height)) +
+  geom_histogram(binwidth = 30)
+```
+]
+]
+
+---
+
+class: top, left
+
+###  Histograms: Customizing labels
+
+.panelset[
+.panel[.panel-name[Plot]
+```{r ref.label = "hist-custom", out.width="40%",fig.align="center",echo = FALSE, warning = FALSE}
+```
+]
+.panel[.panel-name[Code]
+```{r hist-custom, fig.show = "hide", warning = FALSE}
+ggplot(data=starwars, 
+       mapping=aes(x = height)) +
+  geom_histogram(binwidth = 20) +
+  labs( #<<
+    x = "Height (cm.)", #<<
+    y = "Frequency", #<<
+    title = "Heights of Starwars characters" #<<
+  ) #<<
+```
+]
+]
+
+---
+###  Histograms: Fill with a categorical variable
+
+.panelset[
+.panel[.panel-name[Plot]
+```{r ref.label = "hist-fill", out.width="40%",fig.align="center", echo = FALSE, warning = FALSE}
+```
+]
+.panel[.panel-name[Code]
+```{r hist-fill, fig.show = "hide", warning = FALSE}
+ggplot(data=starwars, 
+       mapping=aes(x = height, 
+                  fill = gender)) + #<<   #colors the block
+  geom_histogram(binwidth = 20,
+                 alpha = 0.5) + #<<     #transparency of color
+  labs(
+    x = "Height (cm.)", 
+    y = "Frequency", 
+    title = "Heights of Starwars characters",
+    fill="gender roles" #<<           #caption for fill legend
+  )
+```
+]
+]
+
+---
+
+### Histograms: Facet with a categorical variable
+
+.panelset[
+.panel[.panel-name[Plot]
+```{r ref.label = "hist-facet", out.width="40%",fig.align="center",echo = FALSE, warning = FALSE}
+```
+]
+.panel[.panel-name[Code]
+```{r hist-facet, fig.show = "hide", warning = FALSE}
+ggplot(data=starwars, 
+       mapping=aes(x = height)) + 
+  geom_histogram(binwidth = 20) +
+  labs(
+    x = "Height (cm.)", 
+    y = "Frequency", 
+    title = "Heights of Starwars characters"
+  ) +
+  facet_wrap(~ gender, nrow=3) #<<
+```
+]
+]
+
+---
+
+class: top, left
+
+###  Density plot 
+
+
+```{r, echo=T,eval=T,warning=F,fig.align="center",fig.width=4,fig.height=4}
+
+ggplot(data=starwars, 
+       mapping=aes(x=height)) +
+   geom_density()    #<<
+   
+```
+
+
+- Where the data values are really close, the density is high. When the values are spread out far from each other, the density is low. 
+
+---
+###  Density plot: Adjusting bandwidth
+
+
+.panelset[
+.panel[.panel-name[adjust = 0.5]
+```{r fig.width=6,fig.height=4,fig.align="center",warning=F}
+ggplot(data=starwars, 
+       mapping=aes(x = height)) +
+  geom_density(adjust = 0.5)
+```
+]
+.panel[.panel-name[adjust = 1]
+```{r fig.width=6,fig.height=4,fig.align="center", warning=F}
+ggplot(data=starwars, 
+       mapping=aes(x = height)) +
+  geom_density(adjust = 1) # default bandwidth
+```
+]
+.panel[.panel-name[adjust = 2]
+```{r fig.height=4,fig.width=6,fig.align="center",warning=F}
+ggplot(data=starwars, 
+       mapping=aes(x = height)) +
+  geom_density(adjust = 2)
+```
+]
+]
+
+
+---
+### Density plot: Customizing labels
+
+.panelset[
+.panel[.panel-name[Plot]
+```{r ref.label = "density-custom", echo = FALSE, fig.height=4,fig.width=6,fig.align="center",warning = FALSE}
+```
+]
+.panel[.panel-name[Code]
+```{r density-custom, fig.show = "hide", warning = FALSE}
+ggplot(data=starwars, 
+       mapping=aes(x = height)) +
+  geom_density(adjust = 1) +
+  labs( #<<
+    x = "Height (in.)", 
+    y = "Density", 
+    title = "Heights of Starwars characters"#<<
+  ) #<<
+```
+]
+]
+---
+### Density plots: Adding a categorical variable
+
+.panelset[
+.panel[.panel-name[Plot]
+```{r ref.label = "density-cat", out.width="40%",fig.align="center",echo = FALSE, warning = FALSE}
+```
+]
+.panel[.panel-name[Code]
+```{r density-cat, fig.show = "hide", warning = FALSE}
+ggplot(data=starwars %>% filter(!is.na(gender) ), #<<
+       mapping=aes(x = height, 
+                  fill = gender)) + #<<
+  geom_density(adjust = 1, 
+               alpha = 0.5) + #<<
+  labs(
+    x =  "Height (in.)", 
+    y = "Density", 
+    title = "Heights of Starwars characters",
+    fill="gender roles" #<<
+  )
+```
+]
+]
+---
+###  Boxplot
+
+```{r echo=T,fig.height=4,fig.width=6,fig.align="center",warning=F}
+ggplot(data=starwars,
+       mapping=aes(x=height))+
+    geom_boxplot()   #<<
+```
+
+- About 50% of the data fall inside the box.
+
+- Any data point beyond the whiskers are suspected outliers.
+---
+
+### Boxplot: Customizing the axis
+
+.panelset[
+.panel[.panel-name[Plot]
+```{r ref.label = "box-custom", echo = FALSE, fig.height=4,fig.width=6,fig.align="center",warning = FALSE}
+```
+]
+.panel[.panel-name[Code]
+```{r box-custom, fig.show = "hide", warning = FALSE}
+ggplot(data=starwars, 
+       mapping=aes(x = height)) +
+  geom_boxplot() +
+  labs(
+    x = "Height (in.)", 
+    title = "Heights of Starwars characters"
+  ) +
+  theme( #<<
+    axis.ticks.y = element_blank(), #<<
+    axis.text.y = element_blank() #<<
+  ) #<<
+```
+]
+]
+
+---
+### Boxplot: Adding a categorical variable
+
+.panelset[
+.panel[.panel-name[Plot]
+```{r ref.label = "box-cat", fig.width=6,fig.height=4,echo = FALSE, fig.align="center",warning = FALSE}
+```
+]
+.panel[.panel-name[Code]
+```{r box-cat, fig.show = "hide", warning = FALSE}
+ggplot(data=starwars, 
+       mapping=aes(x = height,
+                  fill = gender)) + #<<
+  geom_boxplot() +
+  labs(x = "Height (in.)", 
+    title = "Heights of Starwars characters",
+    fill = "gender role" #<<
+  ) +
+  theme(
+    axis.ticks.y=element_blank(),
+    axis.text.y=element_blank() ) +
+  scale_fill_viridis_d() #<<  color palette 
+  
+```
+]
+]
+---
+
+
+### Scatter plot
+
+
+```{r warning = FALSE, fig.width=6, fig.height=4,fig.align="center"}
+ggplot(data=starwars, aes(x = height, y = mass)) +
+  geom_point() #<<
+```
+
+
+And who is that chubby, but not so tall character?
+
+
+---
+### Jabba!
+
+```{r echo = FALSE,message=FALSE, warning = FALSE, cache = TRUE, out.width = "80%", fig.align="center"}
+
+jabba <- image_read("images/jabba.png")
+fig <- image_graph(width = 1600, height = 900, res = 200)
+ggplot(data = starwars, mapping = aes(x = height, y = mass)) +
+  geom_point() +
+  labs(title = "Mass vs. height of Starwars characters",
+       x = "Height (cm)", y = "Weight (kg)") +
+  geom_point(data = starwars %>% filter(name == "Jabba Desilijic Tiure"), size = 5, pch = 1, color = "pink", stroke = 3)
+dev.off()
+out <- fig %>% image_composite(jabba, offset = "+1000+30")
+image_write(out, "images/jabbaplot.png", format = "png")
+knitr::include_graphics("images/jabbaplot.png")
+```
+---
+
+### Scatter plot: zooming in
+
+```{r warning = FALSE, message=FALSE,  fig.height=4,fig.width=6,fig.align="center"}
+ggplot(data=starwars %>% filter(mass < 500), #<<
+       aes(x = height, y = mass)) +
+         geom_point() + 
+         geom_smooth() #<<
+```
+
+- The relationship between mass and height is positive, somewhat linear
+---
+
+.left-column[#`r fontawesome::fa(name="edit", fill="white")`]
+.right-column[
+
+1. .left[ Log in to [https://rstudio.stat.washington.edu/auth-sign-in](https://rstudio.stat.washington.edu/auth-sign-in)  with your UW NETID]
+
+1. .left[ Work through the Introduction to ggplot tutorial]
+
+
+]
+
+
+ `r countdown(minutes=50, seconds=0)`
+
+
+
