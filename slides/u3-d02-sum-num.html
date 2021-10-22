@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Exploratory Data Analysis</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Slide credit: Data Science in a Box" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <link href="libs/countdown/countdown.css" rel="stylesheet" />
+    <script src="libs/countdown/countdown.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Exploratory Data Analysis
+## Summarizing Numerical Data <br> </br> <br> </br>
+### Slide credit: <a href="https://datasciencebox.org/">Data Science in a Box</a>
+
+---
+
+
+
+
+
+
+
+
+
+
+# Learning Objectives
+
+ - Review of `ggplot`
+ 
+ - Describe a numerical variable in terms of 
+ 
+  - shape
+  
+  - center
+  
+  - spread
+  
+
+
+---
+class: middle
+
+# ggplot2 ❤️ 🐧
+
+---
+
+## ggplot2 `\(\in\)` tidyverse
+
+.pull-left[
+&lt;img src="images/ggplot2-part-of-tidyverse.png" width="80%" /&gt;
+] 
+.pull-right[ 
+- **ggplot2** is tidyverse's data visualization package 
+- Structure of the code for plots can be summarized as
+
+
+```r
+ggplot(data = [dataset], 
+       mapping = aes(x = [x-variable], 
+                     y = [y-variable])) +
+   geom_xxx() +
+   other options
+```
+]
+
+---
+
+## Data: Palmer Penguins
+
+Measurements for penguin species, island in Palmer Archipelago, size (flipper length, body mass, bill dimensions), and sex.
+
+.pull-left-narrow[
+&lt;img src="images/penguins.png" width="80%" /&gt;
+]
+.pull-right-wide[
+
+```r
+library(palmerpenguins)
+glimpse(penguins)
+```
+
+```
+## Rows: 344
+## Columns: 8
+## $ species           &lt;fct&gt; Adelie, Adelie, Adelie, Adelie, Adeli~
+## $ island            &lt;fct&gt; Torgersen, Torgersen, Torgersen, Torg~
+## $ bill_length_mm    &lt;dbl&gt; 39.1, 39.5, 40.3, NA, 36.7, 39.3, 38.~
+## $ bill_depth_mm     &lt;dbl&gt; 18.7, 17.4, 18.0, NA, 19.3, 20.6, 17.~
+## $ flipper_length_mm &lt;int&gt; 181, 186, 195, NA, 193, 190, 181, 195~
+## $ body_mass_g       &lt;int&gt; 3750, 3800, 3250, NA, 3450, 3650, 362~
+## $ sex               &lt;fct&gt; male, female, female, NA, female, mal~
+## $ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2~
+```
+]
+
+---
+### Scatter plot
+
+
+
+```
+## Warning: Removed 2 rows containing missing values (geom_point).
+```
+
+&lt;img src="u3-d02-sum-num_files/figure-html/penguins-1.png" width="80%" /&gt;
+
+
+---
+
+class: middle
+
+# ggplot layers
+
+---
+
+.midi[
+&gt; **Start with the `penguins` data frame**
+]
+.pull-left[
+
+```r
+*ggplot(data = penguins)
+```
+]
+.pull-right[
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-6-1.png" width="100%" /&gt;
+]
+
+---
+
+.midi[
+&gt; Start with the `penguins` data frame,
+&gt; **map bill depth to the x-axis**
+]
+.pull-left[
+
+```r
+ggplot(data = penguins,
+*      mapping = aes(x = bill_depth_mm))
+```
+]
+.pull-right[
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-7-1.png" width="80%" /&gt;
+]
+
+---
+
+.midi[
+&gt; Start with the `penguins` data frame,
+&gt; map bill depth to the x-axis
+&gt; **and map bill length to the y-axis.**
+]
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+*                    y = bill_length_mm))
+```
+]
+.pull-right[
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-8-1.png" width="80%" /&gt;
+]
+
+---
+
+.midi[
+&gt; Start with the `penguins` data frame,
+&gt; map bill depth to the x-axis
+&gt; and map bill length to the y-axis. 
+&gt; **Represent each observation with a point**
+]
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm)) + 
+* geom_point()
+```
+]
+.pull-right[
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-9-1.png" width="80%" /&gt;
+]
+
+---
+
+.midi[
+&gt; Start with the `penguins` data frame,
+&gt; map bill depth to the x-axis
+&gt; and map bill length to the y-axis. 
+&gt; Represent each observation with a point
+&gt; **and map species to the colour of each point.**
+]
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+*                    colour = species)) +
+  geom_point()
+```
+]
+.pull-right[
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-10-1.png" width="80%" /&gt;
+]
+
+---
+
+.midi[
+&gt; Start with the `penguins` data frame,
+&gt; map bill depth to the x-axis
+&gt; and map bill length to the y-axis. 
+&gt; Represent each observation with a point
+&gt; and map species to the colour of each point.
+&gt; **Add labels"**
+]
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+* labs(title = "Bill depth and length",
+       subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
+       x = "Bill depth (mm)", y = "Bill length (mm)",
+       colour = "My legend", 
+       caption = "Source: Palmer Station LTER / palmerpenguins package") 
+```
+]
+.pull-right[
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-11-1.png" width="80%" /&gt;
+]
+
+
+
+---
+
+.midi[
+&gt; Start with the `penguins` data frame,
+&gt; map bill depth to the x-axis
+&gt; and map bill length to the y-axis. 
+&gt; Represent each observation with a point
+&gt; and map species to the colour of each point.
+&gt; Add labels
+&gt; **Finally, use a discrete colour scale that is designed to be perceived by viewers with common forms of colour blindness.**
+]
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+  labs(title = "Bill depth and length",
+       subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
+       x = "Bill depth (mm)", y = "Bill length (mm)",
+       colour = "My legend",
+       caption = "Source: Palmer Station LTER / palmerpenguins package") +
+* scale_colour_viridis_d()
+```
+]
+.pull-right[
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-12-1.png" width="100%" /&gt;
+]
+
+???
+
+.panelset[
+.panel[.panel-name[Plot]
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-13-1.png" width="80%" /&gt;
+]
+.panel[.panel-name[Code]
+
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+  labs(title = "Bill depth and length",
+       subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
+       x = "Bill depth (mm)", y = "Bill length (mm)",
+       colour = "Species",
+       caption = "Source: Palmer Station LTER / palmerpenguins package") +
+  scale_colour_viridis_d()
+```
+
+```
+## Warning: Removed 2 rows containing missing values (geom_point).
+```
+]
+.panel[.panel-name[Narrative]
+.pull-left-wide[
+.midi[
+Start with the `penguins` data frame,
+map bill depth to the x-axis
+and map bill length to the y-axis. 
+
+Represent each observation with a point
+and map species to the colour of each point.
+
+Title the plot "Bill depth and length", 
+add the subtitle "Dimensions for Adelie, Chinstrap, and Gentoo Penguins", 
+label the x and y axes as "Bill depth (mm)" and "Bill length (mm)", respectively,
+label the legend "Species", 
+and add a caption for the data source.
+
+Finally, use a discrete colour scale that is designed to be perceived by viewers with common forms of colour blindness.
+]
+]
+]
+]
+
+---
+
+## Argument names
+
+.tip[
+You can omit the names of first two arguments when building plots with `ggplot()`.
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+  scale_colour_viridis_d()
+```
+]
+.pull-right[
+
+```r
+ggplot(penguins,
+       aes(x = bill_depth_mm,
+           y = bill_length_mm,
+           colour = species)) +
+  geom_point() +
+  scale_colour_viridis_d()
+```
+]
+
+---
+## A note on piping and layering
+
+- `%&gt;%` used mainly in **dplyr** pipelines, *we pipe the output of the previous line of code as the first input of the next line of code*
+
+--
+- `+` used in **ggplot2** plots is used for "layering", *we create the plot in layers, separated by `+`*
+
+---
+
+## dplyr
+
+.midi[
+❌
+
+
+```r
+penguins +
+  select(bill_depth_mm, species)
+```
+
+```
+## Error in select(bill_depth_mm, species): object 'bill_depth_mm' not found
+```
+
+✅
+
+
+```r
+penguins %&gt;%
+  select(bill_depth_mm, species)
+```
+
+
+```
+## # A tibble: 344 x 2
+##   bill_depth_mm species
+##           &lt;dbl&gt; &lt;fct&gt;  
+## 1          18.7 Adelie 
+## 2          17.4 Adelie 
+## 3          18   Adelie 
+...
+```
+]
+
+---
+## ggplot2
+
+.midi[
+❌
+
+
+```r
+ggplot(penguins, aes(x = bill_depth_mm, y=bill_length_mm)) %&gt;%
+  geom_point()
+```
+
+```
+## Error: `mapping` must be created by `aes()`
+## Did you use %&gt;% instead of +?
+```
+
+✅
+
+
+```r
+ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) +
+  geom_point()
+```
+
+```
+## Warning: Removed 2 rows containing missing values (geom_point).
+```
+
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-18-1.png" width="25%" /&gt;
+]
+
+---
+class: middle
+
+# Aesthetics
+
+---
+
+## Aesthetics options
+
+Commonly used characteristics of plotting characters that can be **mapped to a specific variable** in the data are
+
+- `colour`
+- `fill`
+- `shape`
+- `size`
+- `alpha` (transparency)
+
+---
+
+## Colour
+
+.pull-left[
+
+```r
+ggplot(penguins,
+       aes(x = bill_depth_mm, 
+           y = bill_length_mm,
+*          colour = species)) +
+  geom_point() +
+  scale_colour_viridis_d()
+```
+]
+.pull-right[
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-19-1.png" width="100%" /&gt;
+]
+
+---
+## Colour
+
+.pull-left[
+
+```r
+library(ggridges)     
+ggplot(penguins,
+       aes(x = bill_depth_mm, 
+           y = species,    
+           colour=species )) + 
+  geom_density_ridges() +
+  scale_colour_viridis_d()
+```
+
+```
+## Picking joint bandwidth of 0.382
+```
+]
+.pull-right[
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-20-1.png" width="100%" /&gt;
+]
+
+---
+## Fill
+
+.pull-left[
+
+```r
+library(ggridges)     
+ggplot(penguins,
+       aes(x = bill_depth_mm, 
+           y = species,   
+*          fill=species )) +
+  geom_density_ridges(bandwidth=0.5) +
+  scale_colour_viridis_d()
+```
+]
+.pull-right[
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-21-1.png" width="100%" /&gt;
+]
+---
+## Shape
+
+Mapped to a different variable than `colour`
+
+.pull-left[
+
+```r
+ggplot(penguins,
+       aes(x = bill_depth_mm, 
+           y = bill_length_mm,
+           colour = species,
+*          shape = island)) +
+  geom_point() +
+  scale_colour_viridis_d()
+```
+]
+.pull-right[
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-22-1.png" width="100%" /&gt;
+]
+
+---
+
+## Shape
+
+Mapped to same variable as `colour`
+
+.pull-left[
+
+```r
+ggplot(penguins,
+       aes(x = bill_depth_mm, 
+           y = bill_length_mm,
+           colour = species,
+*          shape = species)) +
+  geom_point() +
+  scale_colour_viridis_d()
+```
+]
+.pull-right[
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-23-1.png" width="100%" /&gt;
+]
+
+???
+
+## Size
+
+.pull-left[
+
+```r
+ggplot(penguins,
+       aes(x = bill_depth_mm, 
+           y = bill_length_mm,
+           colour = species,
+           shape = species,
+*          size = body_mass_g)) +
+  geom_point() +
+  scale_colour_viridis_d()
+```
+]
+.pull-right[
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-24-1.png" width="100%" /&gt;
+]
+
+???
+## Alpha
+
+.pull-left[
+
+```r
+ggplot(penguins,
+       aes(x = bill_depth_mm, 
+           y = bill_length_mm,
+           colour = species,
+           shape = species,
+           size = body_mass_g,
+*          alpha = flipper_length_mm)) +
+  geom_point() +
+  scale_colour_viridis_d()
+```
+]
+.pull-right[
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-25-1.png" width="100%" /&gt;
+]
+
+---
+
+.pull-left[
+**Mapping**
+
+
+```r
+ggplot(penguins,
+       aes(x = bill_depth_mm,
+           y = bill_length_mm,
+*          color = species)) +
+  geom_point()
+```
+
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-26-1.png" width="100%" /&gt;
+]
+.pull-right[
+**Setting**
+
+
+```r
+ggplot(penguins,
+       aes(x = bill_depth_mm,
+           y = bill_length_mm)) + 
+* geom_point(color="red")
+```
+
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-27-1.png" width="100%" /&gt;
+]
+
+---
+
+## Mapping vs. setting
+
+- **Mapping:** Determine the size, alpha, etc. of points based on the values of a variable in the data
+  - goes into `aes()`
+
+- **Setting:** Determine the size, alpha, etc. of points **not** based on the values of a variable in the data
+  - goes into `geom_*()` 
+  
+
+???
+
+.question[Is the `fill`  aesthetic being **mapped** or being **set** in the ridge plot below below? ]
+
+
+```r
+library(ggridges)
+ggplot(penguins, aes(x = bill_depth_mm, y = species, fill=species)) + 
+  geom_density_ridges()
+```
+
+```
+## Picking joint bandwidth of 0.382
+```
+
+```
+## Warning: Removed 2 rows containing non-finite values
+## (stat_density_ridges).
+```
+
+![](u3-d02-sum-num_files/figure-html/ridge-1.png)&lt;!-- --&gt;
+
+---
+
+class: middle
+
+# Faceting
+
+---
+
+## Faceting
+
+- Smaller plots that display different subsets of the data
+- Useful for exploring conditional relationships and large data
+
+---
+
+.panelset[
+.panel[.panel-name[Plot]
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-28-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+.panel[.panel-name[Code]
+
+
+```r
+ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
+  geom_point() +
+* facet_wrap(~ species)
+```
+
+```
+## Warning: Removed 2 rows containing missing values (geom_point).
+```
+]
+]
+
+---
+
+## Various ways to facet
+
+.question[
+In the next few slides describe what each plot displays. Think about how the code relates to the output.
+
+**Note:** The plots in the next few slides do not have proper titles, axis labels, etc. because we want you to figure out what's happening in the plots.
+But you should always label your plots!
+]
+
+---
+
+
+```r
+ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
+  geom_point() +
+* facet_wrap(~ species, ncol = 2)
+```
+
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-29-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+```r
+ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
+  geom_point() +
+* facet_grid(species ~ sex)
+```
+
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-30-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+```r
+*ggplot(penguins %&gt;% filter(!is.na(sex) ),
+     aes(x = bill_depth_mm, y = bill_length_mm)) + 
+     geom_point() +
+     facet_grid(species ~ sex) 
+```
+
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-31-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+## Faceting summary
+
+- `facet_grid()`:
+    - 2d grid
+    - `rows ~ cols`
+- `facet_wrap()`: 1d ribbon wrapped according to number of rows and columns specified or available plotting area
+
+???
+
+## Facet and color
+
+.pull-left-narrow[
+
+```r
+ggplot(
+  penguins, 
+  aes(x = bill_depth_mm, 
+      y = bill_length_mm, 
+*     color = species)) +
+  geom_point() +
+  facet_grid(species ~ sex) +
+* scale_color_viridis_d()
+```
+]
+.pull-right-wide[
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-32-1.png" width="100%" /&gt;
+]
+
+???
+
+## Facet and color, no legend
+
+.pull-left-narrow[
+
+```r
+ggplot(
+  penguins, 
+  aes(x = bill_depth_mm, 
+      y = bill_length_mm, 
+      color = species)) +
+  geom_point() +
+  facet_grid(species ~ sex) +
+  scale_color_viridis_d() +
+* guides(color = FALSE)
+```
+]
+.pull-right-wide[
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-33-1.png" width="100%" /&gt;
+]
+
+---
+
+
+class: middle
+
+# Decribing numerical distributions
+
+---
+
+## Summary statement
+
+- shape
+
+- center
+
+- spread
+
+- unusual observations
+
+---
+
+.left-column[#<svg aria-hidden="true" role="img" viewBox="0 0 576 512" style="height:1em;width:1.12em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"/></svg>]
+.right-column[
+
+1. .left[ Log in to [https://rstudio.stat.washington.edu/auth-sign-in](https://rstudio.stat.washington.edu/auth-sign-in)  with your UW NETID]
+
+1. .left[ Work through the Summzarizng Numerical Data tutorial. You can access it from the Tutorial pane, or by navigating to where the `stat311tutorials` package is stored in your user library.]
+
+
+]
+
+
+ <div class="countdown" id="timer_616f44e0" style="right:0;bottom:0;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">50</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
+
+
+
+
+???
+
+
+## Data: Lending Club
+
+.pull-left-wide[
+
+- Thousands of loans made through the Lending Club, which is a platform that allows individuals to lend to other individuals
+
+- Not all loans are created equal -- ease of getting a loan depends on (apparent) ability to pay back the loan
+
+- Data includes loans *made*, these are not loan applications
+]
+.pull-right-narrow[
+&lt;img src="images/lending-club.png" width="100%" /&gt;
+]
+
+
+
+## Take a peek at data
+
+
+```r
+library(openintro)
+glimpse(loans_full_schema)
+```
+
+```
+## Rows: 10,000
+## Columns: 55
+## $ emp_title                        &lt;chr&gt; "global config enginee~
+## $ emp_length                       &lt;dbl&gt; 3, 10, 3, 1, 10, NA, 1~
+## $ state                            &lt;fct&gt; NJ, HI, WI, PA, CA, KY~
+## $ homeownership                    &lt;fct&gt; MORTGAGE, RENT, RENT, ~
+## $ annual_income                    &lt;dbl&gt; 90000, 40000, 40000, 3~
+## $ verified_income                  &lt;fct&gt; Verified, Not Verified~
+## $ debt_to_income                   &lt;dbl&gt; 18.01, 5.04, 21.15, 10~
+## $ annual_income_joint              &lt;dbl&gt; NA, NA, NA, NA, 57000,~
+## $ verification_income_joint        &lt;fct&gt; , , , , Verified, , No~
+## $ debt_to_income_joint             &lt;dbl&gt; NA, NA, NA, NA, 37.66,~
+## $ delinq_2y                        &lt;int&gt; 0, 0, 0, 0, 0, 1, 0, 1~
+## $ months_since_last_delinq         &lt;int&gt; 38, NA, 28, NA, NA, 3,~
+## $ earliest_credit_line             &lt;dbl&gt; 2001, 1996, 2006, 2007~
+## $ inquiries_last_12m               &lt;int&gt; 6, 1, 4, 0, 7, 6, 1, 1~
+## $ total_credit_lines               &lt;int&gt; 28, 30, 31, 4, 22, 32,~
+## $ open_credit_lines                &lt;int&gt; 10, 14, 10, 4, 16, 12,~
+...
+```
+
+???
+
+## Selected variables
+
+
+```r
+loans &lt;- loans_full_schema %&gt;%
+  select(loan_amount, interest_rate, term, grade, 
+         state, annual_income, homeownership, debt_to_income)
+glimpse(loans)
+```
+
+```
+## Rows: 10,000
+## Columns: 8
+## $ loan_amount    &lt;int&gt; 28000, 5000, 2000, 21600, 23000, 5000, 2~
+## $ interest_rate  &lt;dbl&gt; 14.07, 12.61, 17.09, 6.72, 14.07, 6.72, ~
+## $ term           &lt;dbl&gt; 60, 36, 36, 36, 36, 36, 60, 60, 36, 36, ~
+## $ grade          &lt;fct&gt; C, C, D, A, C, A, C, B, C, A, C, B, C, B~
+## $ state          &lt;fct&gt; NJ, HI, WI, PA, CA, KY, MI, AZ, NV, IL, ~
+## $ annual_income  &lt;dbl&gt; 90000, 40000, 40000, 30000, 35000, 34000~
+## $ homeownership  &lt;fct&gt; MORTGAGE, RENT, RENT, RENT, RENT, OWN, M~
+## $ debt_to_income &lt;dbl&gt; 18.01, 5.04, 21.15, 10.16, 57.96, 6.46, ~
+```
+
+???
+
+## Selected variables
+
+
+
+.midi[
+variable        | description
+----------------|-------------
+`loan_amount`   |	Amount of the loan received, in US dollars
+`interest_rate` |	Interest rate on the loan, in an annual percentage
+`term`	        | The length of the loan, which is always set as a whole number of months
+`grade`	        | Loan grade, which takes a values A through G and represents the quality of the loan and its likelihood of being repaid
+`state`         |	US state where the borrower resides
+`annual_income` |	Borrower’s annual income, including any second income, in US dollars
+`homeownership`	| Indicates whether the person owns, owns but has a mortgage, or rents
+`debt_to_income` | Debt-to-income ratio
+]
+
+
+
+## Variable types
+
+&lt;br&gt;
+
+variable        | type
+----------------|-------------
+`loan_amount`   |	numerical, continuous
+`interest_rate` |	numerical, continuous
+`term`	        | numerical, discrete
+`grade`	        | categorical, ordinal
+`state`         |	categorical, not ordinal
+`annual_income` |	numerical, continuous
+`homeownership`	| categorical, not ordinal
+`debt_to_income` | numerical, continuous
+
+
+
+
+## Shape 
+
+- modality: unimodal, bimodal, multimodal, uniform
+- if unimodal, then look at skewness: right-skewed, left-skewed, symmetric (skew is to the side of the longer tail)
+    
+&lt;img src="images/shapes.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+???
+- center: mean (`mean`), median (`median`), mode (not always useful)
+
+
+
+- spread: range (`range`), standard deviation (`sd`), inter-quartile range (`IQR`)
+- unusual observations
+
+
+
+### Loan amount
+
+.question[ Describe the shape of the distribution of loan amount] 
+
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-38-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+
+### Interest rate
+
+.question[ Describe the shape of the distribution of interest rate] 
+
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-39-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+
+## Numerical summaries: center
+
+- `mean` for symmetric distributions with no outliers
+
+- `median` or 50th percentile for skewed distributions 
+
+
+
+&lt;img src="images/shapes.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+## Lending club
+
+
+
+```r
+loans %&gt;% summarise(
+     mean_amt = mean(loan_amount), 
+     median_rate = median(interest_rate)  )
+```
+
+```
+## # A tibble: 1 x 2
+##   mean_amt median_rate
+##      &lt;dbl&gt;       &lt;dbl&gt;
+## 1   16362.        12.0
+```
+
+
+
+
+## Numerical summaries: spread
+
+- Standard deviation - typical distance from the mean - when using the mean
+
+- Interquartile range (IQR) when using the median
+
+&lt;img src="images/quartiles.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+
+???
+class: top, left
+### Incomes in Seattle
+
+Would you want to use the mean or median to summarize the **typical** price of a single family home in Seattle? 
+
+
+
+.hand[ Median]
+
+
+### FB friends
+
+FB data indicates that 50% of users have 200 or more friends, and that the average friend count of users is 338. what is the likely shape of the distribution of the number of friends? 
+
+- Symmetric
+
+- Skewed to the right
+
+- Skewed to the left
+
+&lt;span style="color:red"&gt; Skewed to the right &lt;/span&gt;
+
+
+
+### Birth rates
+
+Would you want to use the mean, median or modes to summarize the birth rates of countries in Europe and Africa? 
+
+&lt;span style="color:red"&gt; Modes, since the distribution is going to be bimodal &lt;/span&gt;
+
+
+class: top,left
+
+
+
+class: middle
+
+# Spread 
+class: top, left
+
+## Describing variation from the center
+
+- `sd` or standard deviation (SD) when using mean, 
+ 
+- `iqr` or the range of the middle 50% of data, when using median
+
+
+&lt;img src="images/shapes.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+
+class: top, left
+
+## The standard deviation 
+
+- The **standard deviation** (SD) of a set of numbers is a single number which describes the **typical** distance of data points from the mean.  
+
+`$$s = \sqrt{ \frac{1}{n-1} \sum\limits_{i=1}^{n} (x_i - \bar{x})^2 }.$$`
+
+class: top, left
+
+### Guess the SD
+
+One of the lists below has an SD of about 5. Which one?
+
+- 5, 5, 5, 5, 5, 5;
+
+- 10, 10, 10, 20, 20, 20
+
+
+.hand[ The second one since the numbers on this list are 5 away from the mean of 15.]
+
+???
+
+### Calculating the standard deviation by hand 
+
+- To calculate the SD, denoted by `\(s\)`, for a set of numbers `\(x_1, x_2, \dots, x_n\)` 
+
+ - find the mean of the numbers
+  `$$\bar{x} = \frac{1}{n} (x_1 + x_2 \dots, x_n ).$$`
+  
+ - calculate the deviation `\(=x_i - \bar{x}\)` of each data value from the mean 
+
+ - square each deviation `\((x_i - \bar{x})^2\)` 
+ 
+ - add up the squares of the deviations `\(\sum\limits_{i=1}^{n} (x_i  - \bar{x})^2\)`
+ 
+ - divide the sum of squared deviations by `\(n-1\)` and take square root
+
+
+
+class: top, left
+
+### Calculating the standard deviation by hand
+
+Find the SD of a sample of 10 GPAs 
+
+$$2, 2.8, 3.1, 3.5, 3.6, 3.6, 3.7, 3.7, 3.7, 3.8 $$
+ - find the mean of the numbers
+ 
+   $$ \bar{x} = \frac{1}{10} \left(2 +2.8 + \dots + 3.8 \right) = 3.35 $$
+
+ 
+ - find the deviation = `\(x_i - \bar{x}\)` of each number from the mean
+
+| `\(x\)` | 2 | 2.8| 3.1| 3.5|3.6|3.6|3.7|3.7|3.7|3.8|
+|:--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| `\(x_i-\bar{x}\)` | -1.35|-0.55|-0.25|0.15|0.25|0.25|0.35|0.35|0.35|0.45|
+
+
+class: top, left
+
+### Calculating the standard deviation by hand
+
+Find the SD of a sample of 10 GPAs 
+
+$$2, 2.8, 3.1, 3.5, 3.6, 3.6, 3.7, 3.7, 3.7, 3.8 $$
+- find the mean of the numbers
+ 
+   $$ \bar{x} = \frac{1}{10} \left(2 +2.8 + \dots + 3.8 \right) = 3.35 $$
+
+
+ - square each deviation  `\((x_i - \bar{x})^2\)` 
+
+| `\(x\)` | 2 | 2.8| 3.1| 3.5|3.6|3.6|3.7|3.7|3.7|3.8|
+|:--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| `\(x_i-\bar{x}\)` | -1.35|-0.55|-0.25|0.15|0.25|0.25|0.35|0.35|0.35|0.45|
+| `\((x_i - \bar{x})^2\)` | 1.82|0.30|0.06|0.02|0.06|0.06|0.12|0.12|0.12|0.20|
+
+
+
+class: top, left
+
+### Calculating the standard deviation by hand
+
+Find the SD of a sample of 10 GPAs 
+
+$$2, 2.8, 3.1, 3.5, 3.6, 3.6, 3.7, 3.7, 3.7, 3.8 $$
+- find the mean of the numbers
+ 
+   $$ \bar{x} = \frac{1}{10} \left(2 +2.8 + \dots + 3.8 \right) = 3.35 $$
+
+
+ - Add up the square of the deviations  `\(\sum_{i=1}^{n} (x_i - \bar{x})^2\)` 
+
+| `\(x\)` | 2 | 2.8| 3.1| 3.5|3.6|3.6|3.7|3.7|3.7|3.8| Sum|
+|:--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| `\(x_i-\bar{x}\)` |  -1.35|-0.55|-0.25|0.15|0.25|0.25|0.35|0.35|0.35|0.45| |
+| `\((x_i - \bar{x})^2\)` | 1.82|0.30|0.06|0.02|0.06|0.06|0.12|0.12|0.12|0.20|2.82|
+
+
+
+class: top, left
+
+### Calculating the standard deviation by hand
+
+Find the SD of a sample of 10 GPAs 
+
+$$2, 2.8, 3.1, 3.5, 3.6, 3.6, 3.7, 3.7, 3.7, 3.8 $$
+- find the mean of the numbers
+ 
+   $$ \bar{x} = \frac{1}{10} \left(2 +2.8 + \dots + 3.8 \right) = 3.35 $$
+
+
+ - Divide the sum of square deviations by `\(n-1\)` and take square root  `\(\sqrt{\frac{2.82}{9}} = 0.56\)` 
+
+| `\(x\)` | 2 | 2.8| 3.1| 3.5|3.6|3.6|3.7|3.7|3.7|3.8| Sum|
+|:--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| `\(x_i-\bar{x}\)` |  -1.35|-0.55|-0.25|0.15|0.25|0.25|0.35|0.35|0.35|0.45| |
+| `\((x_i - \bar{x})^2\)` | 1.82|0.30|0.06|0.02|0.06|0.06|0.12|0.12|0.12|0.20|2.82|
+
+
+class: top, left
+
+### Calculating the standard deviation in R
+
+
+
+```r
+starwars %&gt;% summarise(mean_ht=mean(height), sd_ht=sd(height) )
+```
+
+
+
+
+```
+## # A tibble: 1 x 2
+##   mean_ht sd_ht
+##     &lt;dbl&gt; &lt;dbl&gt;
+## 1      NA    NA
+```
+
+
+
+
+- Explicitly need to remove missing values (introduce `is.na` here)
+
+
+
+```r
+starwars %&gt;% summarise(mean_ht=mean(height, na.rm=TRUE),
+                       sd_ht=sd(height, na.rm=TRUE) )
+```
+
+```
+## # A tibble: 1 x 2
+##   mean_ht sd_ht
+##     &lt;dbl&gt; &lt;dbl&gt;
+## 1    174.  34.8
+```
+
+```r
+starwars %&gt;% 
+     filter(!is.na(height) ) %&gt;% 
+     summarise(mean_ht=mean(height), sd_ht=sd(height) )
+```
+
+```
+## # A tibble: 1 x 2
+##   mean_ht sd_ht
+##     &lt;dbl&gt; &lt;dbl&gt;
+## 1    174.  34.8
+```
+
+
+???
+.pull-left[
+Calculate the SD for a random sample of 10 GPAs 
+
+$$2, 2.8, 3.1, 3.5, 3.6, 3.6, 3.7, 3.7, 3.7, 3.8 $$
+
+
+
+```r
+x&lt;-c(2,2.8,3.1, 3.5, 3.6, 
+     3.6, 3.7, 3.7, 3.7, 3.8)
+mean(x)
+```
+
+```
+## [1] 3.35
+```
+
+```r
+*sd(x)
+```
+
+```
+## [1] 0.5681354
+```
+]
+
+
+.pull-right[ 
+
+| `\(x\)` | `\(x_i-\bar{x}\)` | `\((x_i-\bar{x})^2\)` |
+|:--: | --:           | ---:              |
+|2    |   -1.35        |    1.8225          |  
+|2.8   |    -0.55      |    0.3025          |
+|3.1   |     -0.25     |    0.0625            |
+|3.5   |     +0.15         |      0.0225        |
+|3.6   |   +0.25         |    0.0625          |
+|3.6   |  +0.25         |    0.0625            |
+|3.7  |     +0.35       |   0.1225           |
+|3.7  |     +0.35       | 0.1225 |
+|3.7 |     +0.35        |0.1225 |
+|3.8 |     + 0.45       | 0.2025 |
+|Total|        0       |  2.8243 |
+
+`$$s= \sqrt{ \frac{1}{9} \times 2.8243} = 0.5602.$$`  
+]
+
+
+
+class: top,left
+
+## The `IQR` 
+
+- The `IQR` or the **inter-quartile range** is a useful measure of variation for skewed distributions. It gives the range of the middle 50% of the data. 
+ 
+&lt;img src="images/quartiles.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+- To calculate the `IQR`, find
+
+ - Q1: the 25th percentile
+ 
+ - Q3: the 75th percentile
+ 
+ - (Q3-Q1)  
+
+
+### Calculating Q1 and Q3 by hand: the ruler method
+
+Imagine that the sample of 10 GPAs have been placed in ascending order along a ruler as shown, with each GPA corresponding to a tick mark.
+
+
+
+
+&lt;img src="u3-d02-sum-num_files/figure-html/ruler-method-1.png" style="display: block; margin: auto;" /&gt;
+
+- The smallest GPA corresponds to the 0th percentile and the largest to the 100th percentile.
+
+
+### Calculating Q1 and Q3 by hand: the ruler method
+
+Imagine that the sample of 10 GPAs have been placed in ascending order along a ruler as shown, with each GPA corresponding to a tick mark.
+
+
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-50-1.png" style="display: block; margin: auto;" /&gt;
+
+- To find the 25th percentile, snap the ruler so 25% of the length of the ruler is to the left and 75% to the right. 
+
+-  If it breaks precisely where a data value is, that value is the 25 percentile. If it is between two data values, we take a weighted mean of those two values. 
+
+
+###  Calculating Q1 and Q3 by hand: the ruler method
+
+Find the 25th percentile for the GPA data.
+
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-51-1.png" style="display: block; margin: auto;" /&gt;
+
+
+- Since the ruler is 9 units long, the 25th percentile is located `$$\frac{1}{4} \times 9 = 2.25$$` units from the left edge. 
+
+ 
+ 
+###  Calculating Q1 and Q3 by hand: the ruler method
+
+Find the 25th percentile for the GPA data.
+
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-52-1.png" style="display: block; margin: auto;" /&gt;
+
+
+
+- The 25th percentile falls in between the 3rd and 4th ticks, and we calculate it using the data values at these locations:
+ 
+ $$ 3.1 + \frac{1}{4} \times (3.5-3.1) = 3.2.$$
+
+class: top, left
+
+### Calculating Q1 and Q3 by hand: the ruler method
+Find the 75th percentile for the GPA data.
+
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-53-1.png" style="display: block; margin: auto;" /&gt;
+
+
+
+- Since the ruler is 9 units long,  the 75th percentile is located `$$6.75=\frac{3}{4} \times 9$$` 
+units from the left edge. 
+
+
+class: top, left
+
+### Calculating Q1 and Q3 by hand: the ruler method
+Find the 75th percentile for the GPA data.
+
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-54-1.png" style="display: block; margin: auto;" /&gt;
+
+
+
+- The 75th percentile falls in between the 7th and 8th ticks, and we calculate it using the data values at these locations:
+ 
+$$ 3.7 + \frac{3}{4} (3.7 - 3.7) = 3.7 $$. 
+
+
+class: top, left
+
+###  Calculating Q1 and Q3 in R: `quantile` function 
+
+
+```r
+starwars %&gt;% summarise(q1_ht = quantile(height, prob=0.25, na.rm=TRUE),
+                       q3_ht = quantile(height, prob=0.75, na.rm=TRUE) )
+```
+
+```
+## # A tibble: 1 x 2
+##   q1_ht q3_ht
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1   167   191
+```
+
+
+
+```r
+starwars %&gt;% summarise(iqr_ht = IQR(height, na.rm=TRUE) )
+```
+
+```
+## # A tibble: 1 x 1
+##   iqr_ht
+##    &lt;dbl&gt;
+## 1     24
+```
+
+???
+
+### Poll Everywhere
+
+Use the ruler method to find the 25th percentile of the list: 
+$$ 0, 20, 40, 50, 60, 80, 100$$
+
+
+&lt;span style="color:red"&gt; Place the numbers along a ruler, with each number at a tickmark. &lt;/span&gt;
+&lt;img src="u3-d02-sum-num_files/figure-html/unnamed-chunk-57-1.png" style="display: block; margin: auto;" /&gt;
+
+&lt;span style="color:red"&gt; The ruler is 6 units long, so the 25th percentile is 1.5 units from the left edge. &lt;/span&gt;
+
+&lt;span style="color:red"&gt; This corresponds to the value `$$20 + \frac{1}{2} \times (40-20).$$` or 30. 
+
+
+class: top, left
+
+## Learning Objectives
+
+- Build plots using ggplot
+ - Histogram
+ 
+ - Density plot
+ 
+ - Box plot
+ 
+ - Scatter plot
+ 
+- describe a numerical variable in terms of shape, center and spread.
+
+  - mean and SD for symmetric distributions
+  
+  - median and IQR for skewed distributions
+  
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "googlecode",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
